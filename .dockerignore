@@ -1,0 +1,10 @@
+.git
+.gitignore
+README.md
+.env
+node_modules
+*.log
+.DS_Store
+data/geoserver_data/temp/
+data/geoserver_data/gwc/
+data/geoserver_data/logs/

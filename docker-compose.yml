@@ -1,0 +1,47 @@
+services:
+  postgis:
+    image: postgis/postgis:15-3.3
+    environment:
+      - POSTGRES_DB=geoserver
+      - POSTGRES_USER=geoserver
+      - POSTGRES_PASSWORD=geoserver
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-database.sql:/docker-entrypoint-initdb.d/init-database.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U geoserver"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+
+  geoserver:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - GEOSERVER_DATA_DIR=/var/geoserver_data
+      - JAVA_OPTS=-Djava.awt.headless=true -Xms512m -Xmx1024m -XX:MaxPermSize=256m
+      - DATABASE_URL=postgresql://geoserver:geoserver@postgis:5432/geoserver
+    volumes:
+      - geoserver_data:/var/geoserver_data
+    depends_on:
+      postgis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/geoserver/web/ || exit 0"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+volumes:
+  geoserver_data:
+    driver: local
+  postgres_data:
+    driver: local

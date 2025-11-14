@@ -1,14 +1,10 @@
-# Use official GeoServer latest stable version
-FROM docker.io/geoserver/geoserver:latest
+# Use Kartoza's well-maintained GeoServer image
+FROM kartoza/geoserver:2.24.2
 
-# Set Java memory options optimized for Railway
-ENV JAVA_OPTS="-Djava.awt.headless=true -Xms512m -Xmx1024m -XX:MaxPermSize=256m -Dorg.geotools.referencing.forceXY=true"
-ENV GEOSERVER_DATA_DIR=/geoserver_data
+# Set Java memory options
+ENV JAVA_OPTS="-Xms512m -Xmx1024m"
+ENV GEOSERVER_DATA_DIR=/opt/geoserver/data_dir
 
-# Create data directory
-RUN mkdir -p ${GEOSERVER_DATA_DIR}
-
-# Expose GeoServer port
 EXPOSE 8080
 
-# Use the default command from official image
+# Use default command from Kartoza image

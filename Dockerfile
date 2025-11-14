@@ -1,10 +1,28 @@
-# Use Kartoza's well-maintained GeoServer image
-FROM kartoza/geoserver:2.24.2
+# Simple GeoServer on Tomcat - WORKING VERSION
+FROM tomcat:9-jdk11-openjdk-slim
 
-# Set Java memory options
-ENV JAVA_OPTS="-Xms512m -Xmx1024m"
-ENV GEOSERVER_DATA_DIR=/opt/geoserver/data_dir
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
 
+# Set environment variables
+ENV JAVA_OPTS="-Djava.awt.headless=true -Xms512m -Xmx1024m -XX:MaxPermSize=256m"
+ENV GEOSERVER_DATA_DIR=/geoserver_data
+
+# Download and install GeoServer 2.24.2
+RUN wget -O /tmp/geoserver.zip \
+    "https://downloads.sourceforge.net/project/geoserver/GeoServer/2.24.2/geoserver-2.24.2-war.zip" && \
+    unzip /tmp/geoserver.zip -d /tmp && \
+    unzip /tmp/geoserver.war -d /usr/local/tomcat/webapps/geoserver && \
+    rm -rf /tmp/*
+
+# Create data directory
+RUN mkdir -p ${GEOSERVER_DATA_DIR}
+
+# Expose port
 EXPOSE 8080
 
-# Use default command from Kartoza image
+# Simple startup
+CMD ["catalina.sh", "run"]

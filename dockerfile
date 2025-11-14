@@ -1,7 +1,7 @@
 # Simple GeoServer Dockerfile for Railway
 FROM tomcat:9-jdk11-openjdk-slim
 
-# Install required packages
+# Install required packages//
 RUN apt-get update && \
     apt-get install -y curl unzip && \
     rm -rf /var/lib/apt/lists/*

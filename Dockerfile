@@ -1,5 +1,5 @@
-# Use official GeoServer image - MOST RELIABLE OPTION
-FROM docker.io/geoserver/geoserver:2.23.2
+# Use official GeoServer latest stable version
+FROM docker.io/geoserver/geoserver:latest
 
 # Set Java memory options optimized for Railway
 ENV JAVA_OPTS="-Djava.awt.headless=true -Xms512m -Xmx1024m -XX:MaxPermSize=256m -Dorg.geotools.referencing.forceXY=true"
@@ -11,4 +11,4 @@ RUN mkdir -p ${GEOSERVER_DATA_DIR}
 # Expose GeoServer port
 EXPOSE 8080
 
-# Use the default command from official image (already optimized)
+# Use the default command from official image

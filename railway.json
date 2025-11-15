@@ -1,10 +1,31 @@
 {
-  "$schema": "https://railway.app/railway.schema.json",
-  "build": {
-    "builder": "DOCKERFILE"
-  },
-  "deploy": {
-    "numReplicas": 1,
-    "restartPolicyType": "ON_FAILURE"
-  }
+  "name": "geoserver",
+  "services": [
+    {
+      "name": "geoserver",
+      "dockerfilePath": "Dockerfile",
+      "ports": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "env": [
+        {
+          "name": "JAVA_OPTS",
+          "value": "-Djava.awt.headless=true -Xms128m -Xmx384m -XX:+UseSerialGC"
+        },
+        {
+          "name": "GEOSERVER_DATA_DIR",
+          "value": "/geoserver_data"
+        }
+      ],
+      "volumes": [
+        {
+          "name": "geoserver-data",
+          "mountPath": "/geoserver_data"
+        }
+      ]
+    }
+  ]
 }
